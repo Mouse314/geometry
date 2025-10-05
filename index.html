@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Вычислительная геометрия</title>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Вычислительная геометрия</h1>
+        <h2 id="task-name"></h2>
+        <p id="task-description"></p>
+    </div>
+
+    <div class="main">
+        <div class="canvas">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="aside">
+
+            <summary>
+                <details>
+                    <summary>Задания</summary>
+
+                    <details>
+                        <summary>Лабораторная работа 4</summary>
+                        <ul>
+                            <li id="l4t1">1. Региональный поиск - подсчёт</li>
+                            <li id="l4t2">2. Планарное подразбиение</li>
+                        </ul>
+                    </details>
+                </details>
+            </summary>
+
+            <hr>
+
+            <details id="task-data">
+                <summary>Данные для задания: </summary>
+
+
+            </details>
+
+        </div>
+    </div>
+
+    <script src="main.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stats.js@0.17.0/build/stats.min.js"></script>
+    <script>
+        const stats = new Stats();
+        stats.showPanel(0); // 0: fps
+        stats.dom.style.position = 'absolute';
+        stats.dom.style.top = '10px';
+        stats.dom.style.right = '10px';
+        document.body.appendChild(stats.dom);
+
+        // В анимации:
+        function animate() {
+            stats.begin();
+            // monitored code here
+            stats.end();
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</body>
+
+</html>

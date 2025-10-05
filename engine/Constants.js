@@ -1,0 +1,1 @@
+export const INTERACT_BOX_SIZE = 10;
