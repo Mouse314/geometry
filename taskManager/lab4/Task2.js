@@ -3,6 +3,7 @@ import { Line } from "../../objects/Line.js";
 import { Point } from "../../objects/Point.js";
 import { Polygon } from "../../objects/Polygon.js";
 import { Segment } from "../../objects/Segment.js";
+import { clearAllFields } from "../taskData/clearAllFields.js";
 
 export default class Task2 {
     constructor(scene) {
@@ -26,6 +27,10 @@ export default class Task2 {
         this.trapetia = null;
 
         this.init();
+
+        // Интерфейс контролов
+        clearAllFields();
+
     }
 
     init() {
@@ -34,8 +39,8 @@ export default class Task2 {
         this.graph.isEditing = true;
 
         this.getLines();
-        this.point = new Point(6.5, 2.5, 'yellow', 10, 'P', true);
-        
+        this.point = new Point(6.5, 3.5, 'yellow', 10, 'P', true);
+
         this.scene.objects = [this.graph, ...this.lines, this.point, this.trapetia];
 
         this.calculations();
@@ -70,11 +75,15 @@ export default class Task2 {
             this.segmentsInLines[i] = this.getSegmentsInsideTunnel(i);
         }
 
+        // Сортируем отрезки внутри нужной полосы
         this.sortedProperSegments = [...this.segmentsInLines[this.ind]].sort((a, b) => {
-            const x1 = (a.startPoint.y < a.endPoint.y) ? a.startPoint.x : a.endPoint.x;
-            const x2 = (b.startPoint.y < b.endPoint.y) ? b.startPoint.x : b.endPoint.x;
+            const x1 = (a.startPoint.x + a.endPoint.x) / 2;
+            const x2 = (b.startPoint.x + b.endPoint.x) / 2;
+
             return (x1 - x2);
         });
+
+        console.log(this.sortedProperSegments);
 
         this.properSegmentIndex = this.binarySegmentsBeetweenSearch(this.sortedProperSegments, this.point, 'point');
 
@@ -87,9 +96,9 @@ export default class Task2 {
         this.color = 'rgba(0, 255, 0, 1)';
 
         // Формируем трапецию
-        this.formTrapetia();
+        // this.formTrapetia();
 
-        this.scene.objects = [this.graph, ...this.lines, this.point, ...this.segmentsInLines[this.ind], this.trapetia];
+        this.scene.objects = [this.graph, ...this.lines, this.trapetia, ...this.segmentsInLines[this.ind], this.point];
     }
 
     formTrapetia() {
@@ -216,9 +225,11 @@ export default class Task2 {
         this.getLines();
 
         this.calculations();
+        this.formTrapetia();
     }
 
     softUpdate() {
-        // this.formTrapetia();
+        this.calculations();
+        this.formTrapetia();
     }
 }

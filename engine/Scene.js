@@ -6,10 +6,8 @@ export class Scene {
         this.objects = [];
         // Окружение для преобразования координат
         this.scale = 50.0; // Масштаб
-        this.offsetX = window.innerWidth / 2; // Смещение по X
-        this.offsetY = window.innerHeight / 2; // Смещение по Y
-
-        this.text = '';
+        this.offsetX = 200; // Смещение по X
+        this.offsetY = 200; // Смещение по Y
 
         this.isShifting = false; // Флаг для проверки зажат ли Shift
         window.addEventListener('keydown', (e) => {
@@ -79,8 +77,6 @@ export class Scene {
     onMouseMove(event) {
         const pos = this.getMouseScreenPos(event);
 
-        this.text = `${this.screenToWorld(pos.x, pos.y).x.toFixed(2)} ; ${this.screenToWorld(pos.x, pos.y).y.toFixed(2)}`;
-
         if (this.isMouseDown) {
             // Движение объектов
             if (!this.interactingCallback) {
@@ -128,17 +124,18 @@ export class Scene {
         event.preventDefault();
         const mouseScreen = this.getMouseScreenPos(event);
         const mouseWorld = this.screenToWorld(mouseScreen.x, mouseScreen.y);
-
+        
         const zoomSpeed = Math.min(1 / (1 + Math.log(this.scale) * 2), .1);
         const delta = Math.sign(event.deltaY) * -zoomSpeed * this.scale;
         const newScale = Math.max(this.scale + delta, 1);
         this.setScale(newScale);
-
-        this.text = `${mouseWorld.x.toFixed(2)} ; ${mouseWorld.y.toFixed(2)}`;
-
+        
         const newOffsetX = mouseScreen.x - mouseWorld.x * newScale;
         const newOffsetY = this.canvas.height - mouseScreen.y - mouseWorld.y * newScale;
         this.setOffset(newOffsetX, newOffsetY);
+        
+        
+        this.task.softUpdate();
         this.render();
     }
 
@@ -186,12 +183,5 @@ export class Scene {
         for (const obj of this.objects) {
             if (obj) obj.draw(this.ctx, this);
         }
-
-        // Отрисовка координат
-        this.ctx.save();
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = '30px Arial';
-        this.ctx.fillText(this.text, 100, 100);
-        this.ctx.restore();
     }
 }

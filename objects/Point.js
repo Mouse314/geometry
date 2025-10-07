@@ -58,6 +58,7 @@ export class Point {
     }
 
     areEquals(other) {
+        if (!other) return false;
         return this.x === other.x && this.y === other.y;
     }
 

@@ -2,9 +2,10 @@ import { Segment } from "./Segment.js";
 import { Point } from "./Point.js";
 
 export class Graph {
-    constructor(scene, isDraggable = true) {
+    constructor(scene, isDraggable = true, isEditable = true) {
 
         this.isDraggable = isDraggable;
+        this.isEditable = isEditable;
 
         this.scene = scene;
         this.verticies = [
@@ -51,9 +52,9 @@ export class Graph {
         for (const vertex of this.verticies) {
             const interactFunc = vertex.getClosestInteractPoint(mousepos, scene, isShifting);
             if (interactFunc) {
-                if (isShifting) { // Шифт - удаление вершины
+                if (isShifting && this.isEditable) { // Шифт - удаление вершины
                     this.verticies = this.verticies.filter(v => v !== vertex);
-                    this.edges = this.edges.filter(e => !e.startPoint.areEquals(vertex) && !e.endPoint.areEquals(vertex)  );
+                    this.edges = this.edges.filter(e => !e.startPoint.areEquals(vertex) && !e.endPoint.areEquals(vertex));
                     return true;
                 }
                 if (this.selectedVertex === null) {
@@ -67,7 +68,7 @@ export class Graph {
                     this.selectedVertex = null;
                     return true;
                 }
-                else {
+                else if(this.isEditable) {
                     // Проверяем, есть ли уже ребро между этими двумя вершинами
                     const existingEdge = this.edges.find(e => (e.areEquals(new Segment(this.selectedVertex, vertex))));
                     if (existingEdge) {
@@ -86,9 +87,11 @@ export class Graph {
             }
         }
         // Добавляем новую точку
-        const worldPos = scene.screenToWorld(mousepos.x, mousepos.y);
-        const newPoint = new Point(worldPos.x, worldPos.y, 'red', 10, String.fromCharCode(65 + this.verticies.length), this.isDraggable);
-        this.verticies.push(newPoint);
-        return true;
+        if (this.isEditable) {
+            const worldPos = scene.screenToWorld(mousepos.x, mousepos.y);
+            const newPoint = new Point(worldPos.x, worldPos.y, 'red', 10, String.fromCharCode(65 + this.verticies.length), this.isDraggable);
+            this.verticies.push(newPoint);
+            return true;
+        }
     }
 }

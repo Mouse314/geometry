@@ -9,7 +9,6 @@ export default class TextInputfield {
     }
 
     addInputField() {
-        console.log('add input field');
         let container = document.getElementById('task-data');
         const field = document.createElement('div');
 
@@ -19,7 +18,7 @@ export default class TextInputfield {
         field.appendChild(name);
 
         const input = document.createElement('input');
-        input.type = 'text';
+        input.type = 'number';
         input.value = this.value;
         input.style.marginLeft = '10px';
         

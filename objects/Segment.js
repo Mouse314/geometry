@@ -2,10 +2,11 @@ import { INTERACT_BOX_SIZE } from '../engine/Constants.js';
 import { Point } from './Point.js';
 
 export class Segment {
-    constructor(startPoint, endPoint, color, isDraggable = true) {
+    constructor(startPoint, endPoint, color, width, isDraggable = true) {
         this.startPoint = startPoint; // Объект Point
         this.endPoint = endPoint;
         this.color = color || 'yellow';
+        this.width = width || 6;
         this.isDraggable = isDraggable;
     }
 
@@ -14,7 +15,7 @@ export class Segment {
         const endScreen = this.endPoint.calculateScreenCoordinates(scene);
 
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 6;
+        ctx.lineWidth = this.width;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(startScreen.x, startScreen.y);

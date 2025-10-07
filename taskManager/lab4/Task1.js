@@ -6,6 +6,7 @@ import { PointField } from "../taskData/PointField.js";
 import { RectField } from "../taskData/RectField.js";
 import TextInputfield from "../taskData/TextInputfield.js";
 import BooleanField from "../taskData/BooleanField.js";
+import { clearAllFields } from "../taskData/clearAllFields.js";
 
 export default class Task1 {
     constructor(scene) {
@@ -37,6 +38,9 @@ export default class Task1 {
         this.rect = null;
 
         this.init();
+
+        // Интерфейс контролов
+        clearAllFields();
 
         const gridShowfield = new BooleanField("Показывать сетку", this.neededGrid, (value) => {
             this.neededGrid = value;
