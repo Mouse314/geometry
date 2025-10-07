@@ -11,13 +11,19 @@ export class Graph {
             new Point(0, 2, 'red', 10, 'A', this.isDraggable),
             new Point(5, 0, 'red', 10, 'B', this.isDraggable),
             new Point(6, 6, 'red', 10, 'C', this.isDraggable),
-            new Point(0, 4, 'red', 10, 'D', this.isDraggable)
+            new Point(0, 4, 'red', 10, 'D', this.isDraggable),
+            new Point(3, 3, 'red', 10, 'E', this.isDraggable),
         ];
         this.edges = [
             new Segment(this.verticies[0], this.verticies[1], 'blue', this.isDraggable),
             new Segment(this.verticies[1], this.verticies[2], 'blue', this.isDraggable),
             new Segment(this.verticies[2], this.verticies[3], 'blue', this.isDraggable),
-            new Segment(this.verticies[3], this.verticies[0], 'blue', this.isDraggable)
+            new Segment(this.verticies[3], this.verticies[0], 'blue', this.isDraggable),
+
+            new Segment(this.verticies[0], this.verticies[4], 'blue', this.isDraggable),
+            new Segment(this.verticies[1], this.verticies[4], 'blue', this.isDraggable),
+            new Segment(this.verticies[2], this.verticies[4], 'blue', this.isDraggable),
+            new Segment(this.verticies[3], this.verticies[4], 'blue', this.isDraggable),
         ];
 
         this.selectedVertex = null;

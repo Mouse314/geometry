@@ -141,7 +141,7 @@ export default class Task1 {
         const bottomRight = this.dominantValues[this.binarySearch(this.pointsOrderedByX, this.rect.center.x + this.rect.scale.x / 2, 'x')]
         [this.binarySearch(this.pointsOrderedByY, this.rect.center.y - this.rect.scale.y / 2, 'y')];
 
-        const value = Math.abs(bottomRight - topRight - bottomLeft + topLeft);
+        const value = Math.abs(topRight - topLeft - bottomRight + bottomLeft);
 
         console.log(value);
 
@@ -167,5 +167,9 @@ export default class Task1 {
     update() {
         this.getInsidePointscount();
         this.scene.render();
+    }
+
+    softUpdate() {
+
     }
 }

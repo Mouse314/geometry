@@ -23,6 +23,8 @@ export default class Task2 {
 
         this.linesSorteredByY = [];
 
+        this.trapetia = null;
+
         this.init();
     }
 
@@ -35,7 +37,7 @@ export default class Task2 {
         this.point = new Point(6.5, 2.5, 'yellow', 10, 'P', true);
 
         this.scene.objects = [];
-        this.scene.objects = [this.graph, ...this.lines, this.point];
+        this.scene.objects = [this.graph, ...this.lines, this.point, this.trapetia];
 
         this.calculations();
 
@@ -43,6 +45,7 @@ export default class Task2 {
 
         this.scene.render();
 
+        this.calculations();
     }
 
     calculations() {
@@ -50,15 +53,15 @@ export default class Task2 {
 
         // Получаем полосу
 
-        const ind = this.binaryIntervalSearch(this.linesSorteredByY, this.point.y, 'point.y');
+        this.ind = this.binaryIntervalSearch(this.linesSorteredByY, this.point.y, 'point.y');
 
-        if (ind - 1 >= 0) {
-            this.linesSorteredByY[ind - 1].color = 'white';
-            this.linesSorteredByY[ind - 1].width = 2;
+        if (this.ind - 1 >= 0) {
+            this.linesSorteredByY[this.ind - 1].color = 'white';
+            this.linesSorteredByY[this.ind - 1].width = 2;
         };
-        if (ind < this.linesSorteredByY.length) {
-            this.linesSorteredByY[ind].color = 'white';
-            this.linesSorteredByY[ind].width = 2;
+        if (this.ind < this.linesSorteredByY.length) {
+            this.linesSorteredByY[this.ind].color = 'white';
+            this.linesSorteredByY[this.ind].width = 2;
         }
 
         this.segmentsInLines = [];
@@ -68,80 +71,87 @@ export default class Task2 {
             this.segmentsInLines[i] = this.getSegmentsInsideTunnel(i);
         }
 
-        const sortedProperSegments = [...this.segmentsInLines[ind]].sort((a, b) => {
+        this.sortedProperSegments = [...this.segmentsInLines[this.ind]].sort((a, b) => {
             const x1 = (a.startPoint.y < a.endPoint.y) ? a.startPoint.x : a.endPoint.x;
             const x2 = (b.startPoint.y < b.endPoint.y) ? b.startPoint.x : b.endPoint.x;
             return (x1 - x2);
         });
 
+        this.properSegmentIndex = this.binarySegmentsBeetweenSearch(this.sortedProperSegments, this.point, 'point');
+
+        this.leftTrapetiaEdge = this.sortedProperSegments[this.properSegmentIndex - 1];
+        this.rightTrapetiaEdge = this.sortedProperSegments[this.properSegmentIndex];
+
+        this.leftTrapetiaEdge && (this.leftTrapetiaEdge.color = 'red');
+        this.rightTrapetiaEdge && (this.rightTrapetiaEdge.color = 'purple');
+
+        this.color = 'rgba(0, 255, 0, 1)';
 
         // Формируем трапецию
+        this.formTrapetia();
 
-        const properSegmentIndex = this.binarySegmentsBeetweenSearch(sortedProperSegments, this.point, 'point');
+        this.scene.objects = [this.graph, ...this.lines, this.point, ...this.segmentsInLines[this.ind], this.trapetia];
+    }
 
-        const leftTrapetiaEdge = sortedProperSegments[properSegmentIndex - 1];
-        const rightTrapetiaEdge = sortedProperSegments[properSegmentIndex];
+    formTrapetia() {
 
-        this.trapetia = null;
-        const color = 'rgba(0, 255, 0, 1)';
-
-        if (!leftTrapetiaEdge && !rightTrapetiaEdge) {
-            if (ind <= 0) {
-                // Точка сверху
-                const topLeft = this.scene.screenToWorld(0, 0);
-                const bottomLeft = this.scene.screenToWorld(0, this.scene.worldToScreen(0, this.linesSorteredByY[0].point.y).y);
-                const bottomRight = this.scene.screenToWorld(this.scene.canvas.width, this.scene.worldToScreen(0, this.linesSorteredByY[0].point.y).y);
-                const topRight = this.scene.screenToWorld(this.scene.canvas.width, 0);
-
-                this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], color, false);
-            }
-            else {
+        if (!this.leftTrapetiaEdge && !this.rightTrapetiaEdge) {
+            if (this.ind <= 0) {
                 // Точка снизу
-                const topLeft = this.scene.screenToWorld(0, this.scene.worldToScreen(0, this.linesSorteredByY[this.linesSorteredByY.length - 1].point.y).y);
+                const topLeft = this.scene.screenToWorld(0, this.scene.worldToScreen(0, this.linesSorteredByY[0].point.y).y);
                 const bottomLeft = this.scene.screenToWorld(0, this.scene.canvas.height);
                 const bottomRight = this.scene.screenToWorld(this.scene.canvas.width, this.scene.canvas.height);
-                const topRight = this.scene.screenToWorld(this.scene.canvas.width, this.scene.worldToScreen(0, this.linesSorteredByY[this.linesSorteredByY.length - 1].point.y).y);
+                const topRight = this.scene.screenToWorld(this.scene.canvas.width, this.scene.worldToScreen(0, this.linesSorteredByY[0].point.y).y);
 
-                this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], color, false);
+                this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], this.color, false);
+                // Точка сверху
+            }
+            else {
+                const topLeft = this.scene.screenToWorld(0, 0);
+                const bottomLeft = this.scene.screenToWorld(0, this.scene.worldToScreen(0, this.linesSorteredByY[this.linesSorteredByY.length - 1].point.y).y);
+                const bottomRight = this.scene.screenToWorld(this.scene.canvas.width, this.scene.worldToScreen(0, this.linesSorteredByY[this.linesSorteredByY.length - 1].point.y).y);
+                const topRight = this.scene.screenToWorld(this.scene.canvas.width, 0);
+
+                console.log(topLeft);
+
+                this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], this.color, false);
             }
         }
-        else if (!leftTrapetiaEdge) {
+        else if (!this.leftTrapetiaEdge) {
             // Точка слева
-            const yMax = Math.max(rightTrapetiaEdge.startPoint.y, rightTrapetiaEdge.endPoint.y);
-            const yMin = Math.min(rightTrapetiaEdge.startPoint.y, rightTrapetiaEdge.endPoint.y);
-            
+            const yMax = Math.max(this.rightTrapetiaEdge.startPoint.y, this.rightTrapetiaEdge.endPoint.y);
+            const yMin = Math.min(this.rightTrapetiaEdge.startPoint.y, this.rightTrapetiaEdge.endPoint.y);
+
             const topLeft = this.scene.screenToWorld(0, this.scene.worldToScreen(0, yMax).y);
             const bottomLeft = this.scene.screenToWorld(0, this.scene.worldToScreen(0, yMin).y);
 
-            const topRight = rightTrapetiaEdge.startPoint.y > rightTrapetiaEdge.endPoint.y ? rightTrapetiaEdge.startPoint : rightTrapetiaEdge.endPoint;
-            const bottomRight = rightTrapetiaEdge.startPoint.y < rightTrapetiaEdge.endPoint.y ? rightTrapetiaEdge.startPoint : rightTrapetiaEdge.endPoint;
+            const topRight = this.rightTrapetiaEdge.startPoint.y > this.rightTrapetiaEdge.endPoint.y ? this.rightTrapetiaEdge.startPoint : this.rightTrapetiaEdge.endPoint;
+            const bottomRight = this.rightTrapetiaEdge.startPoint.y < this.rightTrapetiaEdge.endPoint.y ? this.rightTrapetiaEdge.startPoint : this.rightTrapetiaEdge.endPoint;
 
-            this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], color, false);
+            this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], this.color, false);
         }
-        else if (!rightTrapetiaEdge) {
+        else if (!this.rightTrapetiaEdge) {
             // Точка справа
-            const yMax = Math.max(leftTrapetiaEdge.startPoint.y, leftTrapetiaEdge.endPoint.y);
-            const yMin = Math.min(leftTrapetiaEdge.startPoint.y, leftTrapetiaEdge.endPoint.y);
+            const yMax = Math.max(this.leftTrapetiaEdge.startPoint.y, this.leftTrapetiaEdge.endPoint.y);
+            const yMin = Math.min(this.leftTrapetiaEdge.startPoint.y, this.leftTrapetiaEdge.endPoint.y);
 
             const topRight = this.scene.screenToWorld(this.scene.canvas.width, this.scene.worldToScreen(0, yMax).y);
             const bottomRight = this.scene.screenToWorld(this.scene.canvas.width, this.scene.worldToScreen(0, yMin).y);
 
-            const topLeft = leftTrapetiaEdge.startPoint.y > leftTrapetiaEdge.endPoint.y ? leftTrapetiaEdge.startPoint : leftTrapetiaEdge.endPoint;
-            const bottomLeft = leftTrapetiaEdge.startPoint.y < leftTrapetiaEdge.endPoint.y ? leftTrapetiaEdge.startPoint : leftTrapetiaEdge.endPoint;
+            const topLeft = this.leftTrapetiaEdge.startPoint.y > this.leftTrapetiaEdge.endPoint.y ? this.leftTrapetiaEdge.startPoint : this.leftTrapetiaEdge.endPoint;
+            const bottomLeft = this.leftTrapetiaEdge.startPoint.y < this.leftTrapetiaEdge.endPoint.y ? this.leftTrapetiaEdge.startPoint : this.leftTrapetiaEdge.endPoint;
 
-            this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], color, false);
+            this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], this.color, false);
         }
         else {
             // Точка внутри
-            const bottomLeft = leftTrapetiaEdge.startPoint.y > leftTrapetiaEdge.endPoint.y ? leftTrapetiaEdge.startPoint : leftTrapetiaEdge.endPoint;
-            const topLeft = leftTrapetiaEdge.startPoint.y < leftTrapetiaEdge.endPoint.y ? leftTrapetiaEdge.startPoint : leftTrapetiaEdge.endPoint;
-            const topRight = rightTrapetiaEdge.startPoint.y < rightTrapetiaEdge.endPoint.y ? rightTrapetiaEdge.startPoint : rightTrapetiaEdge.endPoint;
-            const bottomRight = rightTrapetiaEdge.startPoint.y > rightTrapetiaEdge.endPoint.y ? rightTrapetiaEdge.startPoint : rightTrapetiaEdge.endPoint;
+            const bottomLeft = this.leftTrapetiaEdge.startPoint.y > this.leftTrapetiaEdge.endPoint.y ? this.leftTrapetiaEdge.startPoint : this.leftTrapetiaEdge.endPoint;
+            const topLeft = this.leftTrapetiaEdge.startPoint.y < this.leftTrapetiaEdge.endPoint.y ? this.leftTrapetiaEdge.startPoint : this.leftTrapetiaEdge.endPoint;
+            const topRight = this.rightTrapetiaEdge.startPoint.y < this.rightTrapetiaEdge.endPoint.y ? this.rightTrapetiaEdge.startPoint : this.rightTrapetiaEdge.endPoint;
+            const bottomRight = this.rightTrapetiaEdge.startPoint.y > this.rightTrapetiaEdge.endPoint.y ? this.rightTrapetiaEdge.startPoint : this.rightTrapetiaEdge.endPoint;
 
-            this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], color, false);
+            this.trapetia = new Polygon([topLeft, topRight, bottomRight, bottomLeft], this.color, false);
         }
-
-        this.scene.objects = [this.graph, ...this.lines, this.point, ...this.segmentsInLines[ind], this.trapetia];
     }
 
     binaryIntervalSearch(arr, value, key) {
@@ -190,8 +200,6 @@ export default class Task2 {
             const f2 = (this.linesSorteredByY[number - 1].point.y - y1) / (y2 - y1);
             if (f2 >= 0 && f2 <= 1) p2 = new Point(edge.startPoint.x + f2 * (edge.endPoint.x - edge.startPoint.x), this.linesSorteredByY[number - 1].point.y);
 
-            console.log(p1, p2);
-
             if (p1 && p2) {
                 segments.push(new Segment(p1, p2, 'orange', 3, false));
             }
@@ -209,7 +217,9 @@ export default class Task2 {
         this.getLines();
 
         this.calculations();
+    }
 
-        this.scene.render();
+    softUpdate() {
+        // this.formTrapetia();
     }
 }

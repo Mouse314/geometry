@@ -21,8 +21,8 @@ export class Line {
         // Границы экрана в мировых координатах
         const left = scene.screenToWorld(0, 0).x;
         const right = scene.screenToWorld(w, 0).x;
-        const top = scene.screenToWorld(0, 0).y;
-        const bottom = scene.screenToWorld(0, h).y;
+        const bottom = scene.screenToWorld(0, 0).y;
+        const top = scene.screenToWorld(0, h).y;
 
         let intersections = [];
 
@@ -48,12 +48,14 @@ export class Line {
             x = x0 + t * dx;
             if (x >= left && x <= right) intersections.push(new Point(x, bottom));
         }
-
+        
         // Оставляем только две точки
         if (intersections.length >= 2) {
             ctx.save();
             const screen1 = scene.worldToScreen(intersections[0].x, intersections[0].y);
             const screen2 = scene.worldToScreen(intersections[1].x, intersections[1].y);
+            
+
             ctx.strokeStyle = this.color;
             ctx.lineWidth = this.width;
             ctx.setLineDash([10, 10]);

@@ -9,6 +9,8 @@ export class Scene {
         this.offsetX = window.innerWidth / 2; // Смещение по X
         this.offsetY = window.innerHeight / 2; // Смещение по Y
 
+        this.text = '';
+
         this.isShifting = false; // Флаг для проверки зажат ли Shift
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Shift') {
@@ -37,13 +39,13 @@ export class Scene {
     getMouseScreenPos(event) {
         const rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+        const y = (event.clientY - rect.top);
         return { x, y };
     }
 
     getMouseWorldPos(event) {
         const screenPos = this.getMouseScreenPos(event);
-        return this.screenToWorld(screenPos.x, screenPos.y);
+        return this.screenToWorld(screenPos.x, this.canvas.height - screenPos.y);
     }
 
     onMouseDown(event) {
@@ -77,6 +79,8 @@ export class Scene {
     onMouseMove(event) {
         const pos = this.getMouseScreenPos(event);
 
+        this.text = `${this.screenToWorld(pos.x, pos.y).x.toFixed(2)} ; ${this.screenToWorld(pos.x, pos.y).y.toFixed(2)}`;
+
         if (this.isMouseDown) {
             // Движение объектов
             if (!this.interactingCallback) {
@@ -86,7 +90,7 @@ export class Scene {
                         if (interactFunc) {
                             this.interactingCallback = interactFunc;
                             this.lastMousePos = pos;
-                            return; 
+                            return;
                         }
                     }
                 }
@@ -103,8 +107,9 @@ export class Scene {
 
             // Движение холста
             const dx = pos.x - this.lastMousePos.x;
-            const dy = pos.y - this.lastMousePos.y;
+            const dy = -(pos.y - this.lastMousePos.y);
             this.setOffset(this.offsetX + dx, this.offsetY + dy);
+            this.task.softUpdate();
             this.render();
             // ...логика при перемещении с зажатой кнопкой...
         }
@@ -129,8 +134,10 @@ export class Scene {
         const newScale = Math.max(this.scale + delta, 1);
         this.setScale(newScale);
 
+        this.text = `${mouseWorld.x.toFixed(2)} ; ${mouseWorld.y.toFixed(2)}`;
+
         const newOffsetX = mouseScreen.x - mouseWorld.x * newScale;
-        const newOffsetY = mouseScreen.y - mouseWorld.y * newScale;
+        const newOffsetY = this.canvas.height - mouseScreen.y - mouseWorld.y * newScale;
         this.setOffset(newOffsetX, newOffsetY);
         this.render();
     }
@@ -144,7 +151,7 @@ export class Scene {
     worldToScreen(x, y) {
         return {
             x: (x * this.scale) + this.offsetX,
-            y: (y * this.scale) + this.offsetY
+            y: this.canvas.height - ((y * this.scale) + this.offsetY)
         };
     }
 
@@ -152,14 +159,14 @@ export class Scene {
     screenToWorld(x, y) {
         return {
             x: (x - this.offsetX) / this.scale,
-            y: (y - this.offsetY) / this.scale
+            y: ((this.canvas.height - y) - this.offsetY) / this.scale
         };
     }
 
     screenDeltaIntoWorld(delta) {
         return {
             x: delta.x / this.scale,
-            y: delta.y / this.scale
+            y: -delta.y / this.scale
         };
     }
 
@@ -175,10 +182,16 @@ export class Scene {
     }
 
     render() {
-        console.log(this.objects);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         for (const obj of this.objects) {
             if (obj) obj.draw(this.ctx, this);
         }
+
+        // Отрисовка координат
+        this.ctx.save();
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '30px Arial';
+        this.ctx.fillText(this.text, 100, 100);
+        this.ctx.restore();
     }
 }
