@@ -35,8 +35,7 @@ export default class Task2 {
 
         this.getLines();
         this.point = new Point(6.5, 2.5, 'yellow', 10, 'P', true);
-
-        this.scene.objects = [];
+        
         this.scene.objects = [this.graph, ...this.lines, this.point, this.trapetia];
 
         this.calculations();

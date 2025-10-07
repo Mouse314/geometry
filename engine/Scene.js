@@ -37,9 +37,9 @@ export class Scene {
     }
     // Получение координат мыши относительно canvas
     getMouseScreenPos(event) {
-        const rect = this.canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = (event.clientY - rect.top);
+        // const rect = this.canvas.getBoundingClientRect();
+        const x = event.offsetX;
+        const y = event.offsetY;
         return { x, y };
     }
 
