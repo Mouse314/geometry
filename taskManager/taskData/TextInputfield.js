@@ -19,6 +19,8 @@ export default class TextInputfield {
 
         const input = document.createElement('input');
         input.type = 'number';
+        input.min = 0;
+        input.max = 1000;
         input.value = this.value;
         input.style.marginLeft = '10px';
         

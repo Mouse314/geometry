@@ -47,27 +47,6 @@ export class Rect {
             ctx.fillText(this.text, screenCoords.x + (this.scale.x * scene.scale) / 2, screenCoords.y + (this.scale.y * scene.scale) / 2);
         }
 
-        const topleft = { x: this.center.x - this.scale.x / 2, y: this.center.y + this.scale.y / 2 };
-        const topright = { x: this.center.x + this.scale.x / 2, y: this.center.y + this.scale.y / 2 };
-        const bottomleft = { x: this.center.x - this.scale.x / 2, y: this.center.y - this.scale.y / 2 };
-        const bottomright = { x: this.center.x + this.scale.x / 2, y: this.center.y - this.scale.y / 2 };
-
-        const topleftScreen = scene.worldToScreen(topleft.x, topleft.y);
-        const toprightScreen = scene.worldToScreen(topright.x, topright.y);
-        const bottomleftScreen = scene.worldToScreen(bottomleft.x, bottomleft.y);
-        const bottomrightScreen = scene.worldToScreen(bottomright.x, bottomright.y);
-
-        ctx.save();
-        ctx.fillStyle = 'red';
-        ctx.fillRect(topleftScreen.x, topleftScreen.y, INTERACT_BOX_SIZE, INTERACT_BOX_SIZE);
-        ctx.fillStyle = 'green';
-        ctx.fillRect(toprightScreen.x, toprightScreen.y, INTERACT_BOX_SIZE, INTERACT_BOX_SIZE);
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(bottomleftScreen.x, bottomleftScreen.y, INTERACT_BOX_SIZE, INTERACT_BOX_SIZE);
-        ctx.fillStyle = 'yellow';
-        ctx.fillRect(bottomrightScreen.x, bottomrightScreen.y, INTERACT_BOX_SIZE, INTERACT_BOX_SIZE);
-        ctx.restore();
-
         this.subscribers.forEach((sub) => { sub.update(this) });
     }
 

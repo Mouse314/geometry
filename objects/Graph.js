@@ -52,6 +52,12 @@ export class Graph {
         for (const vertex of this.verticies) {
             const interactFunc = vertex.getClosestInteractPoint(mousepos, scene, isShifting);
             if (interactFunc) {
+                if (!this.isEditable && this.selectedVertex && !this.selectedVertex.areEquals(vertex)) {
+                    this.selectedVertex.color = 'red'; // Снимаем выделение
+                    this.selectedVertex = vertex;
+                    vertex.color = 'green'; // Выделяем выбранную вершину
+                    return true;
+                }
                 if (isShifting && this.isEditable) { // Шифт - удаление вершины
                     this.verticies = this.verticies.filter(v => v !== vertex);
                     this.edges = this.edges.filter(e => !e.startPoint.areEquals(vertex) && !e.endPoint.areEquals(vertex));
@@ -68,7 +74,7 @@ export class Graph {
                     this.selectedVertex = null;
                     return true;
                 }
-                else if(this.isEditable) {
+                else if (this.isEditable) {
                     // Проверяем, есть ли уже ребро между этими двумя вершинами
                     const existingEdge = this.edges.find(e => (e.areEquals(new Segment(this.selectedVertex, vertex))));
                     if (existingEdge) {
