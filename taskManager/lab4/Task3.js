@@ -5,6 +5,7 @@ import { Rect } from "../../objects/Rect.js";
 import { Segment } from "../../objects/Segment.js";
 import BooleanField from "../taskData/BooleanField.js";
 import { clearAllFields } from "../taskData/clearAllFields.js";
+import Instruction from "../taskData/Instruction.js";
 import TextInputfield from "../taskData/TextInputfield.js";
 
 export default class Task3 {
@@ -53,6 +54,7 @@ export default class Task3 {
             this.update();
         }, this.scene);
 
+        const instruction = new Instruction(`ЛКМ - перемещение точек и построение пути/области`);
     }
 
     init() {

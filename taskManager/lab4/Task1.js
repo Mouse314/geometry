@@ -7,6 +7,7 @@ import { RectField } from "../taskData/RectField.js";
 import TextInputfield from "../taskData/TextInputfield.js";
 import BooleanField from "../taskData/BooleanField.js";
 import { clearAllFields } from "../taskData/clearAllFields.js";
+import Instruction from "../taskData/Instruction.js";
 
 export default class Task1 {
     constructor(scene) {
@@ -55,6 +56,8 @@ export default class Task1 {
                 this.init();
             }
         }, this.scene);
+
+        const instruction = new Instruction(`ЛКМ по углам - масштабирование прямоугольника \n SHIFT + ЛКМ - перемещение`);
     }
 
     init() {

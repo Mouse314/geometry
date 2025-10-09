@@ -4,6 +4,7 @@ import { Point } from "../../objects/Point.js";
 import { Polygon } from "../../objects/Polygon.js";
 import { Segment } from "../../objects/Segment.js";
 import { clearAllFields } from "../taskData/clearAllFields.js";
+import Instruction from "../taskData/Instruction.js";
 
 export default class Task2 {
     constructor(scene) {
@@ -30,6 +31,8 @@ export default class Task2 {
 
         // Интерфейс контролов
         clearAllFields();
+
+        const instruction = new Instruction(`ЛКМ по точкам - добавление новых и перемещение \n SHIFT + ЛКМ - перемещение, удаление точек графа`);
 
     }
 
