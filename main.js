@@ -14,7 +14,7 @@ const scene = new Scene(canvas);
 
 
 const taskManager = new TaskHub(scene);
-taskManager.setTask(new Task1(scene));
+taskManager.setTask(new Task51(scene));
 
 
 function resizeCanvasToBlock() {

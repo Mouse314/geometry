@@ -3,6 +3,7 @@ import { Point } from "../../objects/Point.js";
 import { Polygon } from "../../objects/Polygon.js";
 import SelectField from "../taskData/SelectField.js";
 import TextInputfield from "../taskData/TextInputfield.js";
+import { clearAllFields } from "../taskData/clearAllFields.js";
 
 export default class Task51 {
     constructor(scene) {
@@ -18,6 +19,8 @@ export default class Task51 {
         
         // Graham | Gift
         this.algType = 'Graham';
+
+        clearAllFields();
 
         const pointNumController = new TextInputfield(
             'Количество точек',
@@ -38,6 +41,7 @@ export default class Task51 {
             ],
             (value) => {
                 this.algType = value;
+                this.update();
             },
             this.scene
         );
@@ -168,6 +172,7 @@ export default class Task51 {
     
     createHull() {
         this.hullGeometry = null;
+        this.giftWrapSegments = [];
 
         if (this.points.length < 3) {
             this.hull = [...this.points];
