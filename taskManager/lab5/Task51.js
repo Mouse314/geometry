@@ -7,6 +7,12 @@ import { clearAllFields } from "../taskData/clearAllFields.js";
 
 export default class Task51 {
     constructor(scene) {
+        this.name = "Задача: Определение выпуклой оболочки";
+        this.description = "Данная задача заключается в нахождении выпуклой оболочки множества точек на плоскости.";
+
+        document.getElementById('task-name').innerText = this.name;
+        document.getElementById('task-description').innerText = this.description;
+
         this.scene = scene;
         this.scene.task = this;
         

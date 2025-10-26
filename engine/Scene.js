@@ -77,6 +77,14 @@ export class Scene {
     onMouseMove(event) {
         const pos = this.getMouseScreenPos(event);
 
+        // Проверка подсветки
+        for (const obj of this.objects) {
+            if (obj.isHighlightable && obj.checkHighlight) {
+                obj.checkHighlight(pos, this);
+                this.render();
+            }
+        }
+
         if (this.isMouseDown) {
             // Движение объектов
             if (!this.interactingCallback) {

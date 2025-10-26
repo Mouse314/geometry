@@ -4,6 +4,7 @@ import Task1 from "./taskManager/lab4/Task1.js";
 import Task2 from "./taskManager/lab4/Task2.js";
 import Task3 from "./taskManager/lab4/Task3.js";
 import Task51 from "./taskManager/lab5/Task51.js";
+import Task61 from "./taskManager/lab6/Task61.js";
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -14,7 +15,7 @@ const scene = new Scene(canvas);
 
 
 const taskManager = new TaskHub(scene);
-taskManager.setTask(new Task51(scene));
+taskManager.setTask(new Task61(scene));
 
 
 function resizeCanvasToBlock() {
@@ -40,4 +41,13 @@ document.getElementById('l4t3').onclick = () => {
 }
 document.getElementById('l5t1').onclick = () => {
     taskManager.setTaskById(51);
+}
+document.getElementById('l6t1').onclick = () => {
+    taskManager.setTaskById(61);
+}
+document.getElementById('l6t2').onclick = () => {
+    taskManager.setTaskById(62);
+}
+document.getElementById('l6t3').onclick = () => {
+    taskManager.setTaskById(63);
 }
