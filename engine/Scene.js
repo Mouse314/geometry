@@ -79,7 +79,7 @@ export class Scene {
 
         // Проверка подсветки
         for (const obj of this.objects) {
-            if (obj.isHighlightable && obj.checkHighlight) {
+            if (obj && obj.isHighlightable && obj.checkHighlight) {
                 obj.checkHighlight(pos, this);
                 this.render();
             }

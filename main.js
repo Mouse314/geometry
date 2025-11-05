@@ -51,3 +51,6 @@ document.getElementById('l6t2').onclick = () => {
 document.getElementById('l6t3').onclick = () => {
     taskManager.setTaskById(63);
 }
+document.getElementById('l7t1').onclick = () => {
+    taskManager.setTaskById(71);
+}

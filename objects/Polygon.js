@@ -111,5 +111,15 @@ export class Polygon {
         ctx.closePath();
         ctx.stroke();
         ctx.restore();
+
+        // Точки
+        ctx.globalAlpha = 1.0;
+        for (const vertex of this.vertices) {
+            const screenPos = scene.worldToScreen(vertex.x, vertex.y);
+            ctx.fillStyle = vertex.color;
+            ctx.beginPath();
+            ctx.arc(screenPos.x, screenPos.y, vertex.size, 0, 2 * Math.PI);
+            ctx.fill();
+        }
     }
 }

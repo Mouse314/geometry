@@ -5,6 +5,7 @@ import Task51 from "./lab5/Task51.js";
 import Task61 from "./lab6/Task61.js";
 import Task62 from "./lab6/Task62.js";
 import Task63 from "./lab6/Task63.js";
+import Task71 from "./lab7/Task71.js";
 
 export default class TaskHub {
     constructor(scene) {
@@ -24,6 +25,7 @@ export default class TaskHub {
         else if (id === 61) this.setTask(new Task61(this.scene));
         else if (id === 62) this.setTask(new Task62(this.scene));
         else if (id === 63) this.setTask(new Task63(this.scene));
+        else if (id === 71) this.setTask(new Task71(this.scene));
     }
 
     playCurrentTask() {
