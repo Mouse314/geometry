@@ -43,13 +43,20 @@ export class Scene {
 
     getMouseWorldPos(event) {
         const screenPos = this.getMouseScreenPos(event);
-        return this.screenToWorld(screenPos.x, this.canvas.height - screenPos.y);
+        return this.screenToWorld(screenPos.x, screenPos.y);
     }
 
     onMouseDown(event) {
         this.isMouseDown = true;
         this.lastMousePos = this.getMouseScreenPos(event);
         this.mouseDownPos = this.lastMousePos;
+        
+        // Allow task to handle mouse down
+        if (this.task && this.task.onMouseDown) {
+            if (this.task.onMouseDown(this.getMouseWorldPos(event), this)) {
+                return; // Task handled the event, skip default behavior
+            }
+        }
         // ...дополнительная логика при нажатии...
     }
 
@@ -59,17 +66,28 @@ export class Scene {
         this.isMouseDown = false;
         this.lastMousePos = this.getMouseScreenPos(event);
         this.interactingCallback = null;
+        
+        // Allow task to handle mouse up
+        if (this.task && this.task.onMouseUp) {
+            this.task.onMouseUp(this.getMouseWorldPos(event), this);
+        }
+
         // ...дополнительная логика при отпускании...
 
         if (Math.abs(this.mouseDownPos.x - this.lastMousePos.x) < 3 && Math.abs(this.mouseDownPos.y - this.lastMousePos.y) < 3) {
             // Клик
+            let handled = false;
             for (const obj of this.objects) {
                 if (obj.clicked) {
                     if (obj.clicked(this.lastMousePos, this, this.isShifting)) {
                         this.task.update();
                         this.render();
+                        handled = true;
                     }
                 }
+            }
+            if (!handled && this.task && this.task.clicked) {
+                 this.task.clicked(this.lastMousePos);
             }
         }
     }
@@ -96,6 +114,14 @@ export class Scene {
                             this.lastMousePos = pos;
                             return;
                         }
+                    }
+                }
+                
+                // Allow task to handle mouse move (dragging)
+                if (this.task && this.task.onMouseMove) {
+                    if (this.task.onMouseMove(this.screenToWorld(pos.x, pos.y), this)) {
+                        this.lastMousePos = pos;
+                        return;
                     }
                 }
             }

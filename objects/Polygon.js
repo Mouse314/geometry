@@ -77,7 +77,7 @@ export class Polygon {
                     insertIdx = i + 1;
                 }
             }
-            const newPoint = new Point(worldPos.x, worldPos.y, 'red', 10, String.fromCharCode(65 + this.vertices.length), this.isDraggable);
+            const newPoint = new Point(worldPos.x, worldPos.y, 'red', 5, String.fromCharCode(65 + this.vertices.length), this.isDraggable);
             this.vertices.splice(insertIdx, 0, newPoint);
             return true;
         }
